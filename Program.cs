@@ -1,4 +1,5 @@
 ﻿using Assemble6502._6502;
+using Brents6502.Assembling;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -10,69 +11,38 @@ namespace Assemble6502
         private static void Main(string[] args)
         {
             string sourceFile = args[0];
-            string contents = File.ReadAllText(sourceFile);
-            List<string> lines = new List<string>(contents.Replace("\r", "").Split('\n'));
-
-            for (int i = 0; i < lines.Count; i++)
-            {
-                lines[i] = lines[i].Replace("\t", " ").Trim();
-                int comment = lines[i].IndexOf(';');
-                if (comment >= 0)
-                {
-                    lines[i] = lines[i].Remove(comment).Trim();
-                }
-
-                while (lines[i].Contains("  "))
-                {
-                    lines[i] = lines[i].Replace("  ", " ");
-                }
-                while (lines[i].Contains(", "))
-                {
-                    lines[i] = lines[i].Replace(", ", ",");
-                }
-                while (lines[i].Contains(" ,"))
-                {
-                    lines[i] = lines[i].Replace(" ,", ",");
-                }
-                while (lines[i].Contains("( "))
-                {
-                    lines[i] = lines[i].Replace("( ", "(");
-                }
-                while (lines[i].Contains(" )"))
-                {
-                    lines[i] = lines[i].Replace(" )", ")");
-                }
-            }
+            SourceCode source = new SourceCode(sourceFile);
 
             InstructionLocater locater = new InstructionLocater();
             List<Instruction> assemblyLines = new List<Instruction>();
             List<Label> labels = new List<Label>();
             List<Define> definitions = new List<Define>();
             List<List<string>> dcbBytes = new List<List<string>>();
+
             ushort address = 0;
             ushort addrFrom = 0x0600;
-            for (int i = 0; i < lines.Count; i++)
+            for (int i = 0; i < source.Lines.Count; i++)
             {
                 int lineNumber = i + 1;
-                if (string.IsNullOrEmpty(lines[i]))
+                if (string.IsNullOrEmpty(source.Lines[i]))
                     continue;
 
-                if (lines[i].StartsWith("*=$"))
-                    addrFrom = Convert.ToUInt16(lines[i].Remove(0, 3), 16);
-                else if (lines[i].ToLower().StartsWith("define"))
-                    definitions.Add(new Define(lines[i], lineNumber)
+                if (source.Lines[i].StartsWith("*=$"))
+                    addrFrom = Convert.ToUInt16(source.Lines[i].Remove(0, 3), 16);
+                else if (source.Lines[i].ToLower().StartsWith("define"))
+                    definitions.Add(new Define(source.Lines[i], lineNumber)
                     {
                         AddressFrom = addrFrom
                     });
-                else if (lines[i].EndsWith(':'))
-                    labels.Add(new Label(lines[i], lineNumber, address)
+                else if (source.Lines[i].EndsWith(':'))
+                    labels.Add(new Label(source.Lines[i], lineNumber, address)
                     {
                         AddressFrom = addrFrom
                     });
                 else
                 {
-                    string cpy = lines[i];
-                    if (lines[i].StartsWith("DCB"))
+                    string cpy = source.Lines[i];
+                    if (source.Lines[i].StartsWith("DCB"))
                         cpy = cpy.Replace(',', ' ');
                     Instruction line = new Instruction(cpy, lineNumber, address, locater, definitions)
                     {
