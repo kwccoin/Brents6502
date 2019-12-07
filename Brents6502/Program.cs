@@ -1,4 +1,5 @@
 ﻿using Brents6502.Assembling;
+using System;
 using System.Collections.Generic;
 using System.IO;
 
@@ -16,7 +17,9 @@ namespace Brents6502
             int extensionPos = outFileName.LastIndexOf('.');
             if (extensionPos >= 0)
                 outFileName = outFileName.Substring(0, extensionPos);
-            File.WriteAllBytes(outFileName + ".prg", byteCode.ToArray());
+            outFileName = outFileName + ".prg";
+            File.WriteAllBytes(outFileName, byteCode.ToArray());
+            Console.WriteLine($"Successfully created program file at {outFileName}. Program code is {byteCode.Count} bytes.");
         }
     }
 }
