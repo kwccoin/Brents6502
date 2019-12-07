@@ -23,13 +23,13 @@ namespace Brents6502
         {
             var filtered = _instructions.Where(i => i.Mnemonic.ToUpper() == line.Instruction.Source.ToUpper());
             if (!filtered.Any())
-                throw new Exception($"The instruction on line {line} is not a valid instruction");
+                throw new Exception($"The instruction {line.Instruction.Source} on line {line.LineNumber} is not a valid instruction ({line.Source})");
             InstructionType type = InstructionType.None;
             if (line.Arguments.Length > 0)
                 type = line.Arguments[0].GetArgType();
             var selected = filtered.FirstOrDefault(i => i.ArgType == type);
             if (selected == null)
-                throw new Exception($"The instruction on line {line} has invalid arguments");
+                throw new Exception($"The instruction {line.Instruction.Source} on line {line.LineNumber} has invalid arguments ({line.Source})");
             return selected;
         }
 

@@ -100,6 +100,8 @@ namespace Brents6502.Assembling
                 bool isNotExecutableLine = false;
                 if (_lineSrcs[i].Length == 0)
                     isNotExecutableLine = true;
+                else if (_lineSrcs[i].StartsWith("*=$"))
+                    isNotExecutableLine = true;
                 else
                 {
                     foreach (var a in _lineAnalyzers)
@@ -179,7 +181,9 @@ namespace Brents6502.Assembling
                 if (l.Instruction == null)
                     continue;
                 IInstruction i = _instructionLocater.GetInstructionForLine(l);
-                byteCode.Add(i.OperationCode);
+                // TODO:  This should be abstracted away
+                if (i.Mnemonic != "DCB")
+                    byteCode.Add(i.OperationCode);
                 foreach (var a in l.Arguments)
                 {
                     // TODO:  This is a hack and branching needs some love
