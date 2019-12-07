@@ -17,6 +17,7 @@ namespace Brents6502.Assembling.LineProcessing
             _replacements.Add(new TokenIndirectReplacement());
             _replacements.Add(new TokenIndirectParenthesisReplacement());
             _replacements.Add(new TokenAbsoluteReplacement());
+            _replacements.Add(new TokenHighLowByteReplacement());
         }
 
         public void ProcessLine(Line line)
