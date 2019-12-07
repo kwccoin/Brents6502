@@ -10,16 +10,23 @@ namespace Brents6502
         private static void Main(string[] args)
         {
             string sourceFile = args[0];
-            SourceCode code = new SourceCode();
-            List<byte> byteCode = code.ProcessCode(sourceFile);
+            try
+            {
+                SourceCode code = new SourceCode();
+                List<byte> byteCode = code.ProcessCode(sourceFile);
 
-            string outFileName = Path.GetFileName(sourceFile);
-            int extensionPos = outFileName.LastIndexOf('.');
-            if (extensionPos >= 0)
-                outFileName = outFileName.Substring(0, extensionPos);
-            outFileName = outFileName + ".prg";
-            File.WriteAllBytes(outFileName, byteCode.ToArray());
-            Console.WriteLine($"Successfully created program file at {outFileName}. Program code is {byteCode.Count} bytes.");
+                string outFileName = Path.GetFileName(sourceFile);
+                int extensionPos = outFileName.LastIndexOf('.');
+                if (extensionPos >= 0)
+                    outFileName = outFileName.Substring(0, extensionPos);
+                outFileName = outFileName + ".prg";
+                File.WriteAllBytes(outFileName, byteCode.ToArray());
+                Console.WriteLine($"Successfully created program file at {outFileName}, program code is {byteCode.Count} bytes");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"There was an error assembling your program: {ex.Message}");
+            }
         }
     }
 }
