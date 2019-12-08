@@ -170,6 +170,7 @@ namespace Brents6502.Assembling
                     continue;
                 foreach (var p in _linePostProcessors)
                     p.ProcessLine(_lines[i]);
+                // TODO:  If the line is mal-formed it should throw an exception
             }
         }
 

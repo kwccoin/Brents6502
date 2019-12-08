@@ -151,6 +151,8 @@ namespace Brents6502.Assembling
             IArgumentSymbol[] symbols = new ArgumentSymbol[parts.Length - 1];
             for (int i = 1; i < parts.Length; i++)
             {
+                // TODO:  Fix any parsing errors like $315 which should be $0315
+
                 IArgumentSymbol arg = new ArgumentSymbol();
                 arg.SetSource(parts[i]);
                 arg.LineNumber = lineNumber;
