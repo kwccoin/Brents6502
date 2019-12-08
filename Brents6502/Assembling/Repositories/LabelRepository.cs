@@ -43,6 +43,8 @@ namespace Brents6502.Assembling.Repositories
             }
             if (src.StartsWith("#<") || src.StartsWith("#>"))
                 return TryGetPossibleLabel(src.Substring(2), out pair);
+            else if (src.Contains(','))
+                return TryGetPossibleLabel(src.Substring(0, src.Length - 2), out pair);
             pair = default;
             return false;
         }

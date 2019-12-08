@@ -32,8 +32,11 @@ namespace Brents6502.Assembling
         {
             // TODO:  This has special behavior and should figure out an abstract
             // way of handling this problem
-            if (t == InstructionType.Address && Instruction.Source.ToUpper()[0] == 'B')
+            if (t == InstructionType.Address && Instruction.Source.ToUpper()[0] == 'B'
+                && Instruction.Source.ToUpper() != "BIT")
+            {
                 return 1;
+            }
 
             switch (t)
             {
